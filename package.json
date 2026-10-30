@@ -1,0 +1,73 @@
+{
+  "name": "nuxt-async-data-addons",
+  "version": "0.0.0",
+  "description": "Collection of common async data addons for Nuxt",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DamianGlowala/nuxt-async-data-addons.git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "useAsyncData",
+    "useFetch",
+    "createUseAsyncData",
+    "createUseFetch",
+    "addons"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "main": "./dist/module.mjs",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/types.d.mts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "nuxt-module-build prepare && nuxt-module-build build",
+    "dev": "nuxt dev playground",
+    "dev:v5": "pnpm -C playground-v5 exec nuxt dev",
+    "dev:build": "nuxt build playground",
+    "dev:build:v5": "pnpm -C playground-v5 exec nuxt build",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground && pnpm -C playground-v5 exec nuxt prepare",
+    "lint": "eslint . --cache",
+    "lint:fix": "eslint . --cache --fix",
+    "prepack": "pnpm build",
+    "test:types": "vue-tsc --noEmit && vue-tsc -b playground --noEmit && vue-tsc -b playground-v5 --noEmit"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^4.6.3"
+  },
+  "devDependencies": {
+    "@nuxt/eslint-config": "^1.17.0",
+    "@nuxt/module-builder": "^1.0.3",
+    "eslint": "^10.13.0",
+    "jiti": "^2.7.0",
+    "nuxt": "^4.6.3",
+    "typescript": "^6.0.3",
+    "vue-tsc": "^3.3.13"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^24.21.0",
+      "onFail": "download"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.16.1",
+      "onFail": "download"
+    }
+  }
+}

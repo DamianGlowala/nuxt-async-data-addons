@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "nuxt-async-data-addons-playground",
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate"
+  },
+  "devDependencies": {
+    "nuxt": "^4.6.3",
+    "nuxt-async-data-addons": "latest"
+  }
+}

@@ -1,0 +1,13 @@
+packages:
+  - playground
+  - playground-v5
+overrides:
+  nuxt-async-data-addons: workspace:*
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: false
+  unrs-resolver: false
+verifyDepsBeforeRun: install
+minimumReleaseAge: 1440
+catalogPrune: true
+minimumReleaseAgeExcludePrune: true

@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "nuxt-async-data-addons-playground-v5",
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate"
+  },
+  "devDependencies": {
+    "nuxt": "npm:nuxt-nightly@5x",
+    "nuxt-async-data-addons": "latest"
+  }
+}
