@@ -6,6 +6,8 @@ const MIN_DURATION = 1000
 export function describeMinDuration() {
   describe('minDuration', () => {
     it('does not hold back server-side rendering', async () => {
+      await $fetch('/min-duration')
+
       const start = Date.now()
       const html = await $fetch<string>('/min-duration')
 
