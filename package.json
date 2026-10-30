@@ -1,6 +1,6 @@
 {
   "name": "nuxt-async-data-addons",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Collection of common async data addons for Nuxt",
   "repository": {
     "type": "git",
