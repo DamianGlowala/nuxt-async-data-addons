@@ -17,17 +17,17 @@ Nuxt 4.6 added [`defineUseAsyncDataAddon`](https://nuxt.com/docs/4.x/api/utils/d
 npx nuxt module add nuxt-async-data-addons
 ```
 
-Addons are auto-imported. Pass the ones you need to `createUseAsyncData` or `createUseFetch`, then use their options at the call site:
+Addons are auto-imported. Add the ones you need to `createUseAsyncData` or `createUseFetch`, optionally with default options for your project, then override those options at the call site when needed:
 
 ```ts [app/composables/useAppAsyncData.ts]
 export const useAppAsyncData = createUseAsyncData({
-  addons: [minDurationUseAsyncDataAddon],
+  addons: [minDurationUseAsyncDataAddon({ minDuration: 400 })],
 })
 ```
 
 ```ts [app/composables/useAppFetch.ts]
 export const useAppFetch = createUseFetch({
-  addons: [minDurationUseFetchAddon],
+  addons: [minDurationUseFetchAddon({ minDuration: 400 })],
 })
 ```
 
@@ -36,11 +36,10 @@ export const useAppFetch = createUseFetch({
 const { data: mountains } = await useAppAsyncData(
   'mountains',
   () => $fetch('/api/mountains'),
-  { minDuration: 500 },
 )
 
 const { data: rivers } = await useAppFetch('/api/rivers', {
-  minDuration: 500,
+  minDuration: 0,
 })
 </script>
 ```
@@ -87,7 +86,7 @@ pnpm test:types
 pnpm test
 ```
 
-Each addon has its own file in [`src/runtime/addons`](./src/runtime/addons), where every export is auto-imported, its own page in [`playground/app/pages`](./playground/app/pages), and its own checks in [`test/e2e/addons`](./test/e2e/addons), registered in [`describeAddons.ts`](./test/e2e/describeAddons.ts). Where it applies to both composables, a file exports one addon per composable, such as `minDurationUseAsyncDataAddon` and `minDurationUseFetchAddon`. `playground-v5` extends `playground` as a layer, so the same pages run on both Nuxt versions.
+Each addon has its own file in [`src/runtime/addons`](./src/runtime/addons), where every export is auto-imported, its own page in [`playground/app/pages`](./playground/app/pages), and its own checks in [`test/e2e/addons`](./test/e2e/addons), registered in [`describeAddons.ts`](./test/e2e/describeAddons.ts). Each addon is a function that takes default options. Where it applies to both composables, a file exports one per composable, such as `minDurationUseAsyncDataAddon` and `minDurationUseFetchAddon`. `playground-v5` extends `playground` as a layer, so the same pages run on both Nuxt versions.
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org), which [uppt](https://github.com/danielroe/uppt) uses to prepare releases. Commits and pull requests about a specific addon use its name as the scope, such as `fix(minDuration): ...`.
 

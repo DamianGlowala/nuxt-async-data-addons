@@ -19,7 +19,7 @@ export function describeMinDuration() {
     it.each([
       'minDurationUseAsyncDataAddon',
       'minDurationUseFetchAddon',
-    ])('%s holds a client-side refresh for minDuration', async (addon) => {
+    ])('%s holds a client-side refresh for its default minDuration', async (addon) => {
       const page = await createPage('/min-duration')
       const row = (name: string) => page.locator('p', { hasText: name })
 
@@ -31,6 +31,21 @@ export function describeMinDuration() {
 
       await row(addon).filter({ hasText: 'success' }).waitFor()
       expect(Date.now() - start).toBeGreaterThanOrEqual(MIN_DURATION)
+
+      await page.close()
+    })
+
+    it.each([
+      ['minDurationUseAsyncDataAddon', 'useAsyncData with minDuration: 0'],
+      ['minDurationUseFetchAddon', 'useFetch with minDuration: 0'],
+    ])('%s lets a call override its default', async (addon, override) => {
+      const page = await createPage('/min-duration')
+      const row = (name: string) => page.locator('p', { hasText: name })
+
+      await page.getByRole('button', { name: 'Refresh' }).click()
+
+      await row(override).filter({ hasText: 'success' }).waitFor()
+      expect(await row(addon).textContent()).toContain('pending')
 
       await page.close()
     })

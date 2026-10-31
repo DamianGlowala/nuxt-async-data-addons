@@ -1,1 +1,1 @@
-export const useMinDurationAsyncData = createUseAsyncData({ addons: [minDurationUseAsyncDataAddon] })
+export const useMinDurationAsyncData = createUseAsyncData({ addons: [minDurationUseAsyncDataAddon({ minDuration: 1000 })] })
