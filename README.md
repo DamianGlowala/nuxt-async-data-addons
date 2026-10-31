@@ -63,6 +63,43 @@ Keeps a request pending for at least `minDuration` milliseconds, so that loading
 - A request that fails early is also held for the minimum duration, so errors don't flash either.
 - Aborting the request, or starting a new one for the same key, drops the remaining wait.
 
+### Throw on error
+
+| Addon | Use with |
+| --- | --- |
+| `throwOnErrorUseAsyncDataAddon` | `createUseAsyncData` |
+| `throwOnErrorUseFetchAddon` | `createUseFetch` |
+
+Makes a failed request reject the awaited composable, `refresh` and `execute`, instead of only setting the `error` ref.
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `throwOnError` | `boolean` | Rejects when the request fails. `refresh` and `execute` also accept it, which overrides the composable's option for that call. |
+
+Add `throwOnErrorUseFetchAddon({ throwOnError: true })` to make failed requests reject by default, then pass `{ throwOnError: false }` to opt out for a single call. Without a default, each call opts in:
+
+```ts
+// shows the error page if this request fails, unless you catch it
+const { data } = await useAppAsyncData('mountains', () => $fetch('/api/mountains'), {
+  throwOnError: true,
+})
+
+const { execute } = useAppFetch('/api/submit', { immediate: false })
+
+try {
+  await execute({ throwOnError: true })
+}
+catch (error) {
+  // show validation errors next to the form, for example
+}
+```
+
+- `error` and `status` are still set before it rejects.
+- An awaited composable marks its error as [`fatal`](https://nuxt.com/docs/4.x/getting-started/error-handling#createerror), so an uncaught failure shows the error page on the server and during client-side navigation. Use `try`/`catch` to handle it yourself, or [`<NuxtErrorBoundary>`](https://nuxt.com/docs/4.x/api/components/nuxt-error-boundary) on the client.
+- Requests started by watchers or `refreshNuxtData` never reject, because nothing could catch them. Their failures only set `error`.
+- A `lazy` composable doesn't wait for its request on the client, so awaiting it doesn't reject there.
+- Nuxt's types currently drop an addon's return value changes when it's combined with an addon that has none, such as `minDuration`. `execute({ throwOnError })` still works in that case but is a type error, while the `throwOnError` option on the composable itself stays typed.
+
 ## Contributing
 
 ```bash

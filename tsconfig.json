@@ -4,6 +4,7 @@
     "dist",
     "node_modules",
     "playground",
-    "playground-v5"
+    "playground-v5",
+    "test/nuxt"
   ]
 }
