@@ -21,27 +21,14 @@ Addons are auto-imported. Add the ones you need to `createUseAsyncData` or `crea
 
 ```ts [app/composables/useAppAsyncData.ts]
 export const useAppAsyncData = createUseAsyncData({
-  addons: [minDurationUseAsyncDataAddon({ minDuration: 400 })],
+  addons: [/* addons go here */],
 })
 ```
 
 ```ts [app/composables/useAppFetch.ts]
 export const useAppFetch = createUseFetch({
-  addons: [minDurationUseFetchAddon({ minDuration: 400 })],
+  addons: [/* addons go here */],
 })
-```
-
-```vue [app/pages/index.vue]
-<script setup lang="ts">
-const { data: mountains } = await useAppAsyncData(
-  'mountains',
-  () => $fetch('/api/mountains'),
-)
-
-const { data: rivers } = await useAppFetch('/api/rivers', {
-  minDuration: 0,
-})
-</script>
 ```
 
 ## Addons
@@ -58,6 +45,35 @@ Keeps a request pending for at least `minDuration` milliseconds, so that loading
 | Option | Type | Description |
 | --- | --- | --- |
 | `minDuration` | `number` | Minimum duration of the request in milliseconds. The addon does nothing when it is unset or `0`. |
+
+Set `minDuration` on the addon to apply it by default, then pass it at the call site to override it for a single call.
+
+```ts [app/composables/useAppAsyncData.ts]
+export const useAppAsyncData = createUseAsyncData({
+  addons: [minDurationUseAsyncDataAddon({ minDuration: 400 })],
+})
+```
+
+```ts [app/composables/useAppFetch.ts]
+export const useAppFetch = createUseFetch({
+  addons: [minDurationUseFetchAddon({ minDuration: 400 })],
+})
+```
+
+```vue [app/pages/index.vue]
+<script setup lang="ts">
+// stays pending for at least 400 ms on the client
+const { data: mountains } = await useAppAsyncData(
+  'mountains',
+  () => $fetch('/api/mountains'),
+)
+
+// has no minimum duration
+const { data: rivers } = await useAppFetch('/api/rivers', {
+  minDuration: 0,
+})
+</script>
+```
 
 - It only applies on the client, so it never slows down server-side rendering. Data already in the payload is not re-fetched during hydration, so there is no wait there either.
 - A request that fails early is also held for the minimum duration, so errors don't flash either.
@@ -76,22 +92,44 @@ Makes a failed request reject the awaited composable, `refresh` and `execute`, i
 | --- | --- | --- |
 | `throwOnError` | `boolean` | Rejects when the request fails. `refresh` and `execute` also accept it, which overrides the composable's option for that call. |
 
-Add `throwOnErrorUseFetchAddon({ throwOnError: true })` to make failed requests reject by default, then pass `{ throwOnError: false }` to opt out for a single call. Without a default, each call opts in:
+Set `throwOnError: true` on the addon to make failed requests reject by default, then pass `{ throwOnError: false }` to opt out for a single call. Without a default, each call opts in with `{ throwOnError: true }`.
 
-```ts
+```ts [app/composables/useStrictAsyncData.ts]
+export const useStrictAsyncData = createUseAsyncData({
+  addons: [throwOnErrorUseAsyncDataAddon({ throwOnError: true })],
+})
+```
+
+```ts [app/composables/useStrictFetch.ts]
+export const useStrictFetch = createUseFetch({
+  addons: [throwOnErrorUseFetchAddon({ throwOnError: true })],
+})
+```
+
+```vue [app/pages/index.vue]
+<script setup lang="ts">
 // shows the error page if this request fails, unless you catch it
-const { data } = await useAppAsyncData('mountains', () => $fetch('/api/mountains'), {
-  throwOnError: true,
+const { data: mountains } = await useStrictAsyncData(
+  'mountains',
+  () => $fetch('/api/mountains'),
+)
+
+// only sets `error` if this request fails
+const { data: rivers } = await useStrictFetch('/api/rivers', {
+  throwOnError: false,
 })
 
-const { execute } = useAppFetch('/api/submit', { immediate: false })
+const { execute } = useStrictFetch('/api/submit', { immediate: false })
 
-try {
-  await execute({ throwOnError: true })
+async function submit() {
+  try {
+    await execute()
+  }
+  catch (error) {
+    // show validation errors next to the form, for example
+  }
 }
-catch (error) {
-  // show validation errors next to the form, for example
-}
+</script>
 ```
 
 - `error` and `status` are still set before it rejects.
