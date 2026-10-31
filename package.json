@@ -46,9 +46,10 @@
     "prepack": "pnpm build",
     "test": "vitest run",
     "test:unit": "vitest run --project unit",
+    "test:nuxt": "vitest run --project nuxt",
     "test:e2e": "vitest run --project e2e",
     "test:watch": "vitest watch",
-    "test:types": "vue-tsc --noEmit && vue-tsc -b playground --noEmit && vue-tsc -b playground-v5 --noEmit"
+    "test:types": "vue-tsc --noEmit && vue-tsc -b playground --noEmit && vue-tsc -b playground-v5 --noEmit && vue-tsc -p test/nuxt --noEmit"
   },
   "dependencies": {
     "@nuxt/kit": "^4.6.3"
@@ -57,7 +58,9 @@
     "@nuxt/eslint-config": "^1.17.0",
     "@nuxt/module-builder": "^1.0.3",
     "@nuxt/test-utils": "^4.3.4",
+    "@vue/test-utils": "^2.5.1",
     "eslint": "^10.13.0",
+    "happy-dom": "^21.0.4",
     "jiti": "^2.7.0",
     "nuxt": "^4.6.3",
     "playwright-core": "^1.64.1",

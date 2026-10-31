@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url'
+import { defineVitestProject } from '@nuxt/test-utils/config'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -17,6 +19,18 @@ export default defineConfig({
           environment: 'node',
         },
       },
+      await defineVitestProject({
+        test: {
+          name: 'nuxt',
+          include: ['test/nuxt/**/*.test.ts'],
+          environment: 'nuxt',
+          environmentOptions: {
+            nuxt: {
+              rootDir: fileURLToPath(new URL('./playground', import.meta.url)),
+            },
+          },
+        },
+      }),
     ],
   },
 })
